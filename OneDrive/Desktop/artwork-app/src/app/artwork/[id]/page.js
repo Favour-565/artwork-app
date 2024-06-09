@@ -1,51 +1,26 @@
-"use client"
-import React from 'react'
-import ArtworkDetails from '@/components/ArtworkDetails'
+import ArtworkDetails from "@/components/ArtworkDetails";
+import { fetchArtworkById } from "@/services/artworkServices";
 
-const page = ({params}) => {
+export default async function ArtworkDetailsPage({ params }) {
+  const response = await fetchArtworkById(params.id);
+
+  const {
+    data: {
+      title,
+      thumbnail: { lqip: thumbnail, alt_text },
+      description,
+      image_id,
+    },
+  } = response;
+
   return (
     <div>
-        <ArtworkDetails id={params.id}/>
+      <ArtworkDetails
+        title={title ?? "No title"}
+        image={image_id ?? thumbnail}
+        alt_text={alt_text}
+        description={description ?? alt_text ?? "No description"}
+      />
     </div>
-  )
+  );
 }
-
-export default page
-
-
-
-
-
-
-// "use client"
-// import React from 'react';
-// import { useRouter } from 'next/router';
-// import ArtworkDetails from '@/components/ArtworkDetails';
-// import { fetchArtworkById, fetchAllArtworks } from '@/services/artworkServices';
-
-// const page = ({ artwork }) => {
-//   const router = useRouter();
-
-//   if (router.isFallback) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return <ArtworkDetails artwork={artwork.data} />;
-// };
-
-// export async function getStaticPaths() {
-//   const data = await fetchAllArtworks();
-//   const paths = data.data.map(artwork => ({
-//     params: { id: artwork.id.toString() }
-//   }));
-
-//   return { paths, fallback: true };
-// }
-
-// export async function getStaticProps({ params }) {
-//   const data = await fetchArtworkById(params.id);
-//   return { props: { artwork: data } };
-// }
-
-// export default page;
-
